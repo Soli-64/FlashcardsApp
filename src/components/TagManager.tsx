@@ -15,7 +15,6 @@ export default function TagManager({ isOpen, onClose }: TagManagerProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [newTagName, setNewTagName] = useState('');
   const [newTagColor, setNewTagColor] = useState(COLORS[0]);
-  const [editingTag, setEditingTag] = useState<Tag | null>(null);
 
   useEffect(() => {
     if (isOpen) {

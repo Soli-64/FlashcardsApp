@@ -24,8 +24,7 @@ export default function DeckList({
   onDelete,
   onNewCard,
   onPractice,
-  cardCounts = {},
-  filteredCardsCount = 0
+  cardCounts = {}
 }: DeckListProps) {
   const handleDeckClick = (deckId: string) => {
     if (onSelect) {

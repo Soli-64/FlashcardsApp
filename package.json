@@ -14,17 +14,18 @@
     "cap:run": "cap run"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/app": "^7.1.0",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/haptics": "^7.0.2",
+    "@capacitor/keyboard": "^7.0.3",
+    "@capacitor/preferences": "^7.0.2",
+    "@capacitor/status-bar": "^7.0.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@capacitor/core": "^5.5.1",
-    "@capacitor/app": "^5.0.6",
-    "@capacitor/haptics": "^5.0.6",
-    "@capacitor/keyboard": "^5.0.6",
-    "@capacitor/status-bar": "^5.0.6",
-    "@capacitor/preferences": "^5.0.6"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^5.5.1",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
@@ -32,4 +33,3 @@
     "vite": "^5.0.8"
   }
 }
-
