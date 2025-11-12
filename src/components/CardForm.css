@@ -1,0 +1,125 @@
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--card-bg, #1a1a1a);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+}
+
+.form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid var(--border-color, #333);
+  border-radius: 8px;
+  background: var(--input-bg, #2a2a2a);
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #646cff);
+}
+
+.deck-select {
+  padding: 0.75rem;
+  border: 2px solid var(--border-color, #333);
+  border-radius: 8px;
+  background: var(--input-bg, #2a2a2a);
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.deck-select:focus {
+  outline: none;
+  border-color: var(--primary-color, #646cff);
+}
+
+@media (prefers-color-scheme: light) {
+  .deck-select {
+    border-color: var(--border-color, #ddd);
+    background: var(--input-bg, #f9f9f9);
+    color: var(--text-primary, #213547);
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: var(--primary-color, #646cff);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover, #535bf2);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--secondary-bg, #3a3a3a);
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+}
+
+.btn-secondary:hover {
+  background: var(--secondary-hover, #4a4a4a);
+}
+
+@media (prefers-color-scheme: light) {
+  .card-form {
+    background: var(--card-bg, #ffffff);
+  }
+
+  .form-group label {
+    color: var(--text-primary, #213547);
+  }
+
+  .form-group textarea {
+    border-color: var(--border-color, #ddd);
+    background: var(--input-bg, #f9f9f9);
+    color: var(--text-primary, #213547);
+  }
+
+  .btn-secondary {
+    background: var(--secondary-bg, #f0f0f0);
+    color: var(--text-primary, #213547);
+  }
+}
+

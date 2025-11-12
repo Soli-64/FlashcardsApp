@@ -1,0 +1,65 @@
+.deck-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--card-bg, #1a1a1a);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.deck-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.deck-form .form-group:first-child {
+  margin-top: 1rem;
+}
+
+.deck-form .form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+}
+
+.deck-form .form-group input,
+.deck-form .form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid var(--border-color, #333);
+  border-radius: 8px;
+  background: var(--input-bg, #2a2a2a);
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.deck-form .form-group input:focus,
+.deck-form .form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #646cff);
+}
+
+@media (prefers-color-scheme: light) {
+  .deck-form {
+    background: var(--card-bg, #ffffff);
+  }
+
+  .deck-form .form-group label {
+    color: var(--text-primary, #213547);
+  }
+
+  .deck-form .form-group input,
+  .deck-form .form-group textarea {
+    border-color: var(--border-color, #ddd);
+    background: var(--input-bg, #f9f9f9);
+    color: var(--text-primary, #213547);
+  }
+}
+
