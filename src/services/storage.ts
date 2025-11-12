@@ -1,8 +1,10 @@
 import { Preferences } from '@capacitor/preferences';
 import { Card, CardDeck } from '../types/card';
+import { Tag } from '../types/tag';
 
 const CARDS_KEY = 'cards';
 const DECKS_KEY = 'decks';
+const TAGS_KEY = 'tags';
 
 export class CardStorage {
   // Card operations
@@ -73,6 +75,48 @@ export class CardStorage {
     const cards = await this.getAllCards();
     const filteredCards = cards.filter(card => card.deckId !== deckId);
     await Preferences.set({ key: CARDS_KEY, value: JSON.stringify(filteredCards) });
+  }
+
+  // Tag operations
+  static async getAllTags(): Promise<Tag[]> {
+    try {
+      const { value } = await Preferences.get({ key: TAGS_KEY });
+      return value ? JSON.parse(value) : [];
+    } catch (error) {
+      console.error('Error getting tags:', error);
+      return [];
+    }
+  }
+
+  static async saveTag(tag: Tag): Promise<void> {
+    const tags = await this.getAllTags();
+    const existingIndex = tags.findIndex(t => t.id === tag.id);
+    
+    if (existingIndex >= 0) {
+      tags[existingIndex] = tag;
+    } else {
+      tags.push(tag);
+    }
+    
+    await Preferences.set({ key: TAGS_KEY, value: JSON.stringify(tags) });
+  }
+
+  static async deleteTag(tagId: string): Promise<void> {
+    const tags = await this.getAllTags();
+    const filtered = tags.filter(t => t.id !== tagId);
+    await Preferences.set({ key: TAGS_KEY, value: JSON.stringify(filtered) });
+    
+    // Remove tag from all decks
+    const decks = await this.getAllDecks();
+    const updatedDecks = decks.map(deck => ({
+      ...deck,
+      tagIds: deck.tagIds?.filter(id => id !== tagId) || []
+    })).map(deck => ({
+      ...deck,
+      tagIds: deck.tagIds && deck.tagIds.length > 0 ? deck.tagIds : undefined
+    }));
+    
+    await Preferences.set({ key: DECKS_KEY, value: JSON.stringify(updatedDecks) });
   }
 }
 

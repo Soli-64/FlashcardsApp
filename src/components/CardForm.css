@@ -84,11 +84,6 @@
   color: white;
 }
 
-.btn-primary:hover {
-  background: var(--primary-hover, #535bf2);
-  transform: translateY(-1px);
-}
-
 .btn-primary:active {
   transform: translateY(0);
 }
@@ -96,10 +91,6 @@
 .btn-secondary {
   background: var(--secondary-bg, #3a3a3a);
   color: var(--text-primary, rgba(255, 255, 255, 0.87));
-}
-
-.btn-secondary:hover {
-  background: var(--secondary-hover, #4a4a4a);
 }
 
 @media (prefers-color-scheme: light) {

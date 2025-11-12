@@ -1,8 +1,10 @@
 import { CardDeck } from '../types/card';
+import { Tag } from '../types/tag';
 import './DeckList.css';
 
 interface DeckListProps {
   decks: CardDeck[];
+  tags: Tag[];
   selectedDeckId?: string;
   onSelect?: (deckId: string | undefined) => void;
   onEdit?: (deck: CardDeck) => void;
@@ -14,7 +16,8 @@ interface DeckListProps {
 }
 
 export default function DeckList({ 
-  decks, 
+  decks,
+  tags,
   selectedDeckId, 
   onSelect, 
   onEdit, 
@@ -51,6 +54,18 @@ export default function DeckList({
                 <h3>{deck.name}</h3>
                 {deck.description && (
                   <p className="deck-description">{deck.description}</p>
+                )}
+                {deck.tagIds && deck.tagIds.length > 0 && (
+                  <div className="deck-tags">
+                    {deck.tagIds.map(tagId => {
+                      const tag = tags.find(t => t.id === tagId);
+                      return tag ? (
+                        <span key={tagId} className="deck-tag-badge">
+                          {tag.name}
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
                 )}
                 <p className="deck-count">
                   {deckCardCount} {deckCardCount === 1 ? 'card' : 'cards'}

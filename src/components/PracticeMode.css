@@ -38,11 +38,6 @@
   font-family: inherit;
 }
 
-.btn-exit:hover {
-  background: var(--hover-bg, rgba(255, 255, 255, 0.1));
-  border-color: var(--primary-color, #646cff);
-}
-
 .practice-progress {
   font-size: 1rem;
   font-weight: 600;
@@ -163,10 +158,6 @@
   .btn-exit {
     border-color: var(--border-color, #ddd);
     color: var(--text-primary, #213547);
-  }
-
-  .btn-exit:hover {
-    background: var(--hover-bg, rgba(0, 0, 0, 0.05));
   }
 
   .practice-progress {

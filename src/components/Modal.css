@@ -85,19 +85,9 @@
   color: var(--text-primary, rgba(255, 255, 255, 0.87));
 }
 
-.btn-secondary:hover {
-  background: var(--secondary-hover, rgba(255, 255, 255, 0.15));
-}
-
 .btn-danger {
   background: #ef4444;
   color: white;
-}
-
-.btn-danger:hover {
-  background: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
 }
 
 .btn-danger:active {
@@ -131,9 +121,6 @@
     color: var(--text-primary, #213547);
   }
 
-  .btn-secondary:hover {
-    background: var(--secondary-hover, rgba(0, 0, 0, 0.1));
-  }
 }
 
 @media (max-width: 768px) {

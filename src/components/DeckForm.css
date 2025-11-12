@@ -46,6 +46,46 @@
   border-color: var(--primary-color, #646cff);
 }
 
+.tag-input-container {
+  width: 100%;
+}
+
+.tag-input-container input {
+  width: 100%;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tag-badge {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
+  background: var(--card-bg, #1a1a1a);
+  color: var(--text-primary, rgba(255, 255, 255, 0.87));
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.tag-badge.selected {
+  background: var(--primary-color, #646cff);
+  border-color: var(--primary-color, #646cff);
+  color: white;
+}
+
+.tags-empty {
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 @media (prefers-color-scheme: light) {
   .deck-form {
     background: var(--card-bg, #ffffff);

@@ -5,19 +5,24 @@ import DeckForm from './components/DeckForm';
 import DeckList from './components/DeckList';
 import Modal from './components/Modal';
 import PracticeMode from './components/PracticeMode';
+import TagManager from './components/TagManager';
 import { CardStorage } from './services/storage';
 import { Card, CardDeck } from './types/card';
+import { Tag } from './types/tag';
 
 type ViewMode = 'decks' | 'card-form' | 'deck-form' | 'practice';
 
 function App() {
   const [cards, setCards] = useState<Card[]>([]);
   const [decks, setDecks] = useState<CardDeck[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>('decks');
   const [selectedDeckId, setSelectedDeckId] = useState<string | undefined>();
   const [editingCard, setEditingCard] = useState<Card | undefined>();
   const [editingDeck, setEditingDeck] = useState<CardDeck | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; deckId: string | null; cardCount: number }>({
     isOpen: false,
     deckId: null,
@@ -49,7 +54,7 @@ function App() {
   }, []);
 
   const loadData = async () => {
-    await Promise.all([loadCards(), loadDecks()]);
+    await Promise.all([loadCards(), loadDecks(), loadTags()]);
   };
 
   const loadCards = async () => {
@@ -60,6 +65,11 @@ function App() {
   const loadDecks = async () => {
     const loadedDecks = await CardStorage.getAllDecks();
     setDecks(loadedDecks);
+  };
+
+  const loadTags = async () => {
+    const loadedTags = await CardStorage.getAllTags();
+    setTags(loadedTags);
   };
 
   // Calculate card counts per deck
@@ -79,17 +89,29 @@ function App() {
     return cards.filter(card => card.deckId === selectedDeckId);
   }, [cards, selectedDeckId]);
 
-  // Filter decks by search query
+  // Filter decks by search query and tags
   const filteredDecks = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return decks;
+    let filtered = decks;
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(deck => 
+        deck.name.toLowerCase().includes(query) ||
+        (deck.description && deck.description.toLowerCase().includes(query))
+      );
     }
-    const query = searchQuery.toLowerCase().trim();
-    return decks.filter(deck => 
-      deck.name.toLowerCase().includes(query) ||
-      (deck.description && deck.description.toLowerCase().includes(query))
-    );
-  }, [decks, searchQuery]);
+
+    // Filter by selected tag IDs
+    if (selectedTagIds.length > 0) {
+      filtered = filtered.filter(deck => {
+        if (!deck.tagIds || deck.tagIds.length === 0) return false;
+        return selectedTagIds.every(tagId => deck.tagIds!.includes(tagId));
+      });
+    }
+
+    return filtered;
+  }, [decks, searchQuery, selectedTagIds]);
 
   // Card handlers
   const handleCreateCard = async (card: Card) => {
@@ -106,6 +128,12 @@ function App() {
     await loadDecks();
     setViewMode('decks');
     setEditingDeck(undefined);
+  };
+
+  const handleTagManagerClose = async () => {
+    setIsTagManagerOpen(false);
+    await loadTags();
+    await loadDecks();
   };
 
   const handleEditDeck = (deck: CardDeck) => {
@@ -165,16 +193,59 @@ function App() {
         {viewMode === 'decks' && (
           <>
             <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search decks..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
+              <div className="search-input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Search decks..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsTagManagerOpen(true)}
+                  className="tag-manager-button"
+                  title="Manage Tags"
+                >
+                  Tags
+                </button>
+              </div>
+              {tags.length > 0 && (
+                <div className="tag-filter-container">
+                  <div className="tag-filter-list">
+                    {tags.map(tag => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        style={{ backgroundColor: selectedTagIds.includes(tag.id) ? tag.color : '#1a1a1a' }}
+                        onClick={() => {
+                          if (selectedTagIds.includes(tag.id)) {
+                            setSelectedTagIds(selectedTagIds.filter(id => id !== tag.id));
+                          } else {
+                            setSelectedTagIds([...selectedTagIds, tag.id]);
+                          }
+                        }}
+                        className="tag-badge-filter"
+                      >
+                        {tag.name}
+                      </button>
+                    ))}
+                  </div>
+                  {selectedTagIds.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTagIds([])}
+                      className="tag-filter-clear"
+                    >
+                      Clear filters
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
             <DeckList
               decks={filteredDecks}
+              tags={tags}
               selectedDeckId={selectedDeckId}
               onSelect={handleDeckSelect}
               onEdit={handleEditDeck}
@@ -189,8 +260,6 @@ function App() {
                 const deckCards = cards.filter(card => card.deckId === deckId);
                 if (deckCards.length > 0) {
                   setViewMode('practice');
-                } else {
-                  alert('No cards available for practice. Please add cards to this deck first.');
                 }
               }}
               cardCounts={cardCounts}
@@ -241,6 +310,10 @@ function App() {
         confirmText="Delete"
         cancelText="Cancel"
         confirmButtonClass="btn-danger"
+      />
+      <TagManager
+        isOpen={isTagManagerOpen}
+        onClose={handleTagManagerClose}
       />
     </div>
   );

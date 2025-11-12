@@ -14,6 +14,7 @@ export interface CardDeck {
   id: string;
   name: string;
   description?: string;
+  tagIds?: string[];
   createdAt: number;
   updatedAt: number;
 }
