@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './App.css';
+import BrowseCards from './components/BrowseCards';
 import CardForm from './components/CardForm';
 import DeckForm from './components/DeckForm';
 import DeckList from './components/DeckList';
@@ -10,7 +11,7 @@ import { CardStorage } from './services/storage';
 import { Card, CardDeck } from './types/card';
 import { Tag } from './types/tag';
 
-type ViewMode = 'decks' | 'card-form' | 'deck-form' | 'practice';
+type ViewMode = 'decks' | 'card-form' | 'deck-form' | 'practice' | 'browse-cards';
 
 function App() {
   const [cards, setCards] = useState<Card[]>([]);
@@ -117,7 +118,11 @@ function App() {
   const handleCreateCard = async (card: Card) => {
     await CardStorage.saveCard(card);
     await loadCards();
-    setViewMode('decks');
+    if (viewMode === 'browse-cards') {
+      // Stay in browse-cards after edit
+    } else {
+      setViewMode('decks');
+    }
     setEditingCard(undefined);
   };
 
@@ -173,9 +178,24 @@ function App() {
   };
 
   const handleCancel = () => {
-    setViewMode('decks');
-    setEditingCard(undefined);
-    setEditingDeck(undefined);
+    if (viewMode === 'browse-cards' && editingCard) {
+      // Stay in browse-cards, just clear the editing state
+      setEditingCard(undefined);
+    } else {
+      setViewMode('decks');
+      setEditingCard(undefined);
+      setEditingDeck(undefined);
+    }
+  };
+
+  const handleDeleteCard = async (cardId: string) => {
+    await CardStorage.deleteCard(cardId);
+    await loadCards();
+  };
+
+  const handleEditCard = (card: Card) => {
+    setEditingCard(card);
+    setViewMode('card-form');
   };
 
   if (viewMode === 'practice') {
@@ -201,47 +221,49 @@ function App() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="search-input"
                 />
+              </div>
+              <div className='tag-list'>
                 <button
                   type="button"
                   onClick={() => setIsTagManagerOpen(true)}
                   className="tag-manager-button"
                   title="Manage Tags"
                 >
-                  Tags
+                  T
                 </button>
-              </div>
-              {tags.length > 0 && (
-                <div className="tag-filter-container">
-                  <div className="tag-filter-list">
-                    {tags.map(tag => (
-                      <button
-                        key={tag.id}
-                        type="button"
-                        style={{ backgroundColor: selectedTagIds.includes(tag.id) ? tag.color : '#1a1a1a' }}
-                        onClick={() => {
-                          if (selectedTagIds.includes(tag.id)) {
-                            setSelectedTagIds(selectedTagIds.filter(id => id !== tag.id));
-                          } else {
-                            setSelectedTagIds([...selectedTagIds, tag.id]);
-                          }
-                        }}
-                        className="tag-badge-filter"
-                      >
-                        {tag.name}
-                      </button>
-                    ))}
+                {selectedTagIds.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTagIds([])}
+                    className="tag-filter-clear"
+                  >
+                    X
+                  </button>
+                )}
+                {tags.length > 0 && (
+                  <div className="tag-filter-container">
+                    <div className="tag-filter-list">
+                      {tags.map(tag => (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          style={{ backgroundColor: selectedTagIds.includes(tag.id) ? tag.color : '#1a1a1a' }}
+                          onClick={() => {
+                            if (selectedTagIds.includes(tag.id)) {
+                              setSelectedTagIds(selectedTagIds.filter(id => id !== tag.id));
+                            } else {
+                              setSelectedTagIds([...selectedTagIds, tag.id]);
+                            }
+                          }}
+                          className="tag-badge-filter"
+                        >
+                          {tag.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  {selectedTagIds.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedTagIds([])}
-                      className="tag-filter-clear"
-                    >
-                      Clear filters
-                    </button>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </div>
             <DeckList
               decks={filteredDecks}
@@ -275,6 +297,12 @@ function App() {
               >
                 New Deck
               </button>
+              <button
+                onClick={() => setViewMode('browse-cards')}
+                className="btn btn-secondary btn-large"
+              >
+                Browse All Cards
+              </button>
             </div>
           </>
         )}
@@ -297,6 +325,28 @@ function App() {
               onSubmit={handleCreateDeck}
               onCancel={handleCancel}
               initialDeck={editingDeck}
+            />
+          </div>
+        )}
+
+        {viewMode === 'browse-cards' && (
+          <BrowseCards
+            cards={cards}
+            decks={decks}
+            onEdit={handleEditCard}
+            onDelete={handleDeleteCard}
+            onClose={() => setViewMode('decks')}
+          />
+        )}
+
+        {viewMode === 'card-form' && editingCard && (
+          <div className="form-container">
+            <CardForm
+              onSubmit={handleCreateCard}
+              onCancel={handleCancel}
+              initialCard={editingCard}
+              decks={decks}
+              selectedDeckId={selectedDeckId}
             />
           </div>
         )}

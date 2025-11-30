@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.cardapp.app',
-  appName: 'Card App',
+  appId: 'com.lsoapps.falshcardapps',
+  appName: 'FlashCards',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
