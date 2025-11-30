@@ -4,6 +4,7 @@ import BrowseCards from './components/BrowseCards';
 import CardForm from './components/CardForm';
 import DeckForm from './components/DeckForm';
 import DeckList from './components/DeckList';
+import ImportExport from './components/ImportExport';
 import Modal from './components/Modal';
 import PracticeMode from './components/PracticeMode';
 import TagManager from './components/TagManager';
@@ -11,7 +12,7 @@ import { CardStorage } from './services/storage';
 import { Card, CardDeck } from './types/card';
 import { Tag } from './types/tag';
 
-type ViewMode = 'decks' | 'card-form' | 'deck-form' | 'practice' | 'browse-cards';
+type ViewMode = 'decks' | 'card-form' | 'deck-form' | 'practice' | 'browse-cards' | 'import-export';
 
 function App() {
   const [cards, setCards] = useState<Card[]>([]);
@@ -287,23 +288,32 @@ function App() {
               cardCounts={cardCounts}
               filteredCardsCount={filteredCards.length}
             />
-            <div className="practice-button-container">
-              <button
-                onClick={() => {
-                  setEditingDeck(undefined);
-                  setViewMode('deck-form');
-                }}
-                className="btn btn-primary btn-large"
-              >
-                New Deck
-              </button>
-              <button
-                onClick={() => setViewMode('browse-cards')}
-                className="btn btn-secondary btn-large"
-              >
-                Browse All Cards
-              </button>
-            </div>
+            {
+              !selectedDeckId &&
+              <div className="actions-button-container">
+                <button
+                  onClick={() => {
+                    setEditingDeck(undefined);
+                    setViewMode('deck-form');
+                  }}
+                  className="btn btn-primary btn-large"
+                >
+                  New Deck
+                </button>
+                <button
+                  onClick={() => setViewMode('browse-cards')}
+                  className="btn btn-secondary btn-large"
+                >
+                  Browse Cards
+                </button>
+                <button
+                  onClick={() => setViewMode('import-export')}
+                  className="btn btn-secondary btn-large"
+                >
+                  Import / Export
+                </button>
+              </div>
+            }
           </>
         )}
 
@@ -327,6 +337,13 @@ function App() {
               initialDeck={editingDeck}
             />
           </div>
+        )}
+
+        {viewMode === 'import-export' && (
+          <ImportExport
+            onClose={() => setViewMode('decks')}
+            onImported={async () => { await loadCards(); setViewMode('decks'); }}
+          />
         )}
 
         {viewMode === 'browse-cards' && (

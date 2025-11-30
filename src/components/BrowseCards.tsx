@@ -123,10 +123,6 @@ export default function BrowseCards({ cards, decks, onEdit, onDelete, onClose }:
         </div>
       </div>
 
-      {/* <div className="browse-cards-count">
-        {filteredAndSortedCards.length} card{filteredAndSortedCards.length !== 1 ? 's' : ''}
-      </div> */}
-
       {filteredAndSortedCards.length === 0 ? (
         <div className="browse-cards-empty">
           <p>No cards found. Try adjusting your search or filters.</p>
